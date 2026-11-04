@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>UNIT.Home — Статус живлення</title>
+  <style>
+    @font-face {
+      font-family: 'Graphik';
+      src: local('Graphik'), local('Graphik-Regular'),
+           url('https://fonts.cdnfonts.com/s/14876/GraphikRegular.woff') format('woff');
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: 'Graphik';
+      src: local('Graphik-Bold'),
+           url('https://fonts.cdnfonts.com/s/14876/GraphikBold.woff') format('woff');
+      font-weight: 700;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Graphik', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: #FFFFFF;
+      color: #000000;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: calc(env(safe-area-inset-top, 20px) + 12px) 20px calc(env(safe-area-inset-bottom, 20px) + 16px);
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    /* Верхня шапка */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 24px;
+    }
+    .logo-badge {
+      width: 14px;
+      height: 14px;
+      background: #000000;
+      border-radius: 3px;
+    }
+    .logo-text {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #000000;
+    }
+
+    /* Блок адреси */
+    .address-section {
+      margin-bottom: 24px;
+    }
+    .building-row-1 {
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 1.2;
+      color: #000000;
+      letter-spacing: -0.01em;
+    }
+    .building-row-2 {
+      font-size: 25px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: #000000;
+      letter-spacing: -0.02em;
+    }
+
+    /* Основна картка батареї */
+    .main-card {
+      background: #F8F9FA;
+      border: 1px solid #EDEDED;
+      border-radius: 32px;
+      padding: 32px 20px 24px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .battery-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #737373;
+      margin-bottom: 8px;
+    }
+
+    .battery-value {
+      font-size: 96px;
+      font-weight: 700;
+      letter-spacing: -0.05em;
+      line-height: 0.95;
+      color: #000000;
+      margin-bottom: 22px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 22px;
+      background: #000000;
+      border-radius: 999px;
+      padding: 3px;
+      margin-bottom: 20px;
+      display: flex;
+    }
+    .progress-bar {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.4s ease, background-color 0.4s ease;
+      background-color: #76E011;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .grid-online {
+      background: #E8F9D8;
+      color: #2D6B00;
+    }
+    .grid-online .status-dot {
+      background: #52C41A;
+    }
+    .grid-offline {
+      background: #FFE8E8;
+      color: #B91C1C;
+    }
+    .grid-offline .status-dot {
+      background: #EF4444;
+    }
+
+    /* Нижні технічні блоки */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .telem-box {
+      background: #F8F9FA;
+      border: 1px solid #EDEDED;
+      border-radius: 24px;
+      padding: 18px 12px;
+      text-align: center;
+    }
+    .telem-tag {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #737373;
+      margin-bottom: 8px;
+    }
+    .telem-number {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #000000;
+      margin-bottom: 4px;
+    }
+    .telem-caption {
+      font-size: 11px;
+      color: #8E8E93;
+    }
+
+    /* Футер */
+    .footer-stamp {
+      font-size: 12px;
+      color: #8E8E93;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    /* Секція інтерактивного демо */
+    .demo-bar {
+      background: #F2F2F7;
+      border-radius: 20px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .demo-bar-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .demo-bar input[type=range] {
+      width: 140px;
+    }
+    .demo-btn {
+      padding: 6px 12px;
+      border-radius: 10px;
+      border: 1px solid #D1D1D6;
+      background: #FFFFFF;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div>
+    <div class="top-bar">
+      <div class="logo-badge"></div>
+      <div class="logo-text">UNIT.HOME</div>
+    </div>
+
+    <div class="address-section">
+      <div class="building-row-1">Будинок А07</div>
+      <div class="building-row-2">Під'їзд 5</div>
+    </div>
+
+    <div class="main-card">
+      <div class="battery-label">Заряд батареї</div>
+      <div class="battery-value" id="batteryNum">78%</div>
+      <div class="progress-track">
+        <div class="progress-bar" id="batteryBar" style="width: 78%;"></div>
+      </div>
+      <div>
+        <div class="status-pill grid-online" id="statusPill">
+          <span class="status-dot"></span>
+          <span id="statusText">МІСЬКА МЕРЕЖА Є</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="telemetry-grid">
+      <div class="telem-box">
+        <div class="telem-tag" id="timeLabel">ЗІ СВІТЛОМ</div>
+        <div class="telem-number" id="timeValue">4г 12хв</div>
+        <div class="telem-caption" id="timeSub">від відключення</div>
+      </div>
+      <div class="telem-box">
+        <div class="telem-tag">АВТОНОМІЯ</div>
+        <div class="telem-number" id="autonomyValue">≈ 9г 30хв</div>
+        <div class="telem-caption">залишилось</div>
+      </div>
+    </div>
+
+    <div class="footer-stamp">Оновлено: 16:42</div>
+  </div>
+
+  <!-- Панель для перевірки/тесту на телефоні -->
+  <div class="demo-bar">
+    <div class="demo-bar-row">
+      <span>Заряд: <span id="labelRange">78</span>%</span>
+      <input type="range" id="inputRange" min="5" max="100" value="78">
+    </div>
+    <div class="demo-bar-row">
+      <span>Мережа:</span>
+      <button class="demo-btn" id="btnToggle">Перемкнути стан</button>
+    </div>
+  </div>
+
+  <script>
+    let isGridOn = true;
+    let battery = 78;
+
+    const batteryNum = document.getElementById('batteryNum');
+    const batteryBar = document.getElementById('batteryBar');
+    const statusPill = document.getElementById('statusPill');
+    const statusText = document.getElementById('statusText');
+    const timeLabel = document.getElementById('timeLabel');
+    const timeValue = document.getElementById('timeValue');
+    const timeSub = document.getElementById('timeSub');
+    const autonomyValue = document.getElementById('autonomyValue');
+    const inputRange = document.getElementById('inputRange');
+    const labelRange = document.getElementById('labelRange');
+    const btnToggle = document.getElementById('btnToggle');
+
+    function getColor(val) {
+      if (val > 50) return '#76E011';
+      if (val > 20) return '#F59E0B';
+      return '#EF4444';
+    }
+
+    function render() {
+      batteryNum.textContent = battery + '%';
+      batteryBar.style.width = battery + '%';
+      batteryBar.style.backgroundColor = getColor(battery);
+
+      const hoursTotal = (battery / 100) * 12.2;
+      const h = Math.floor(hoursTotal);
+      const m = Math.round((hoursTotal - h) * 60);
+      autonomyValue.textContent = '≈ ' + h + 'г ' + (m < 10 ? '0' : '') + m + 'хв';
+
+      if (isGridOn) {
+        statusPill.className = 'status-pill grid-online';
+        statusText.textContent = 'МІСЬКА МЕРЕЖА Є';
+        timeLabel.textContent = 'ЗІ СВІТЛОМ';
+        timeValue.textContent = '4г 12хв';
+        timeSub.textContent = 'від підключення';
+      } else {
+        statusPill.className = 'status-pill grid-offline';
+        statusText.textContent = 'МІСЬКА МЕРЕЖА ВІДСУТНЯ';
+        timeLabel.textContent = 'БЕЗ СВІТЛА';
+        timeValue.textContent = '2г 45хв';
+        timeSub.textContent = 'триває знеструмлення';
+      }
+    }
+
+    inputRange.addEventListener('input', (e) => {
+      battery = parseInt(e.target.value);
+      labelRange.textContent = battery;
+      render();
+    });
+
+    btnToggle.addEventListener('click', () => {
+      isGridOn = !isGridOn;
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
